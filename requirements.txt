@@ -18,3 +18,4 @@ numpy
 Flask-Cors==3.0.8
 lightgbm==2.2.3
 scikit-learn
+pika
