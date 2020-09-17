@@ -86,6 +86,7 @@ def some_function(json_input):
     U = np.array(UserEm)
     x = model.predict(U.reshape(1, -1))    
     print("sending")
+    print(x[0].tolist())
     return json.dumps({"RevenueForecastId": id, "Result": x[0].tolist()})
 
 
