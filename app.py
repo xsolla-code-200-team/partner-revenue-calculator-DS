@@ -55,10 +55,27 @@ def some_function(json_input):
 #    time.sleep(10)
     #a = json.loads(json_input)
     a = json_input
+    newli = []
+    for li in a["Genres"]:
+        newli.append(li.lower())
+    a["Genres"] = newli
+    newli = []
+    for li in a['Monetization']:
+        if li == "Free2Pay":
+            newli.append("free2play")
+        elif li == "Pay2Pay"
+            newli.append("pay2play")
+    a['Monetization'] = newli
+    newli = []
+    for li in a['Platforms']:
+        newli.append(li.lower())
+    a['Platforms'] = newli
+    
+    
     ListUserGeneres = ["unknown", "rpg", "action", "adventure", "simulation", "puzzle",
              "strategy", "arcade", "casual", "platformer", "racing", "shooter",
              "other"]
-    ListUserMonet = ["f2p", "p2p", "unknown", "other"]
+    ListUserMonet = ["free2play", "pay2play", "unknown", "other"]
     ListUserPlatforms = ["pc", "mac", "android", "ios", "web", "other", "unknown"]
     ListUserRegions = ["1", "2", "3", "4", "8", "10", "11", "12", "13", "14"]
     UserEm = []
