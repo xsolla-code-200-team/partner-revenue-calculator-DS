@@ -9,26 +9,26 @@ import json
 from ast import literal_eval
 import traceback
 import threading
+import time
 
 application = Flask(__name__)
 
 model = pickle.load(open("./models/tfidf.pickle", "rb"))
 
-@application.route("/")  
+
+@application.route("/")
 def hello():
-    resp = {'message':"Hello World!"}
-    
+    resp = {'message': "Hello World!"}
     response = jsonify(resp)
-    
     return response
+
+
 url = os.getenv("CLOUDAMQP_URL")
 params = pika.URLParameters(url)
 connection = pika.BlockingConnection(params)
-#    pika.ConnectionParameters(
-#        host='localhost'))  # здесь нужно изменить, брать host из переменной окружения CLOUDAMQP_URL, которую мы добавим на хероку
+# здесь нужно изменить, брать host из переменной окружения CLOUDAMQP_URL, которую мы добавим на хероку
 
 channel = connection.channel()
-
 exchange_name = 'model-exchange'
 queue_name = 'model-queue'
 routing_key = 'model-message'
@@ -42,7 +42,7 @@ def on_request(ch, method, props, body):
     result = some_function(json_input)
     channel.basic_publish(
         exchange=exchange_name,
-        routing_key='model-response'+'-'+json_input["RevenueForecastId"],
+        routing_key='model-response' + '-' + json_input["RevenueForecastId"],
         body=result.encode("utf-8"))
     ch.basic_ack(delivery_tag=method.delivery_tag)
 
@@ -57,17 +57,17 @@ def some_function(json_input):
 
 
 channel.basic_qos(prefetch_count=1)
-channel.basic_consume(queue=queue_name, on_message_callback=on_request)        
+channel.basic_consume(queue=queue_name, on_message_callback=on_request)
+
+
+def listen():
+    port = int(os.getenv('PORT', 5000))
+    application.run(debug=False, port=port, host='0.0.0.0', threaded=True)
+
 
 if __name__ == "__main__":
-    Th = threading.Thread(target = channel.start_consuming)
+    Th = threading.Thread(target=listen)
     Th.start()
-#    print(" [x] Awaiting RPC requests")
-#    channel.start_consuming()
-    
-    port = int(os.getenv('PORT', 5000))
-    application.run(debug=False, port=port, host='0.0.0.0' , threaded=True)
-
-
-
+    print(" [x] Awaiting RPC requests")
+    channel.start_consuming()
 
