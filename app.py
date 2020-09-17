@@ -60,7 +60,7 @@ channel.basic_qos(prefetch_count=1)
 channel.basic_consume(queue=queue_name, on_message_callback=on_request)        
 
 if __name__ == "__main__":
-    Th = threading.Thread(channel.start_consuming)
+    Th = threading.Thread(target = channel.start_consuming)
     Th.start()
 #    print(" [x] Awaiting RPC requests")
 #    channel.start_consuming()
