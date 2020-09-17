@@ -51,9 +51,40 @@ def some_function(json_input):
     print(json_input)
     id = json_input["RevenueForecastId"]
     print("inside function")
-    time.sleep(10)
+#    time.sleep(10)
+    a = json.loads(json_input)
+    ListUserGeneres = ["unknown", "rpg", "action", "adventure", "simulation", "puzzle",
+             "strategy", "arcade", "casual", "platformer", "racing", "shooter",
+             "other"]
+    ListUserMonet = ["f2p", "p2p", "unknown", "other"]
+    ListUserPlatforms = ["pc", "mac", "android", "ios", "web", "other", "unknown"]
+    ListUserRegions = ["1", "2", "3", "4", "8", "10", "11", "12", "13", "14"]
+    UserEm = []
+    for li in ListUserGeneres:
+        if li in a["Genres"]:
+            UserEm.append(1)
+        else:
+            UserEm.append(0)
+    for li in ListUserMonet:
+        if li in a['Monetization']:
+            UserEm.append(1)
+        else:
+            UserEm.append(0)
+    for li in ListUserPlatforms:
+        if li in a['Platforms']:
+            UserEm.append(1)
+        else:
+            UserEm.append(0)
+    for li in ListUserRegions:
+        if li in a['Regions']:
+            UserEm.append(1)
+        else:
+            UserEm.append(0)
+            
+    U = np.array(UserEm)
+    x = model.predict(U.reshape(1, -1))    
     print("sending")
-    return json.dumps({"RevenueForecastId": id, "Result": "123"})
+    return json.dumps({"RevenueForecastId": id, "Result": x[0].tolist()})
 
 
 channel.basic_qos(prefetch_count=1)
