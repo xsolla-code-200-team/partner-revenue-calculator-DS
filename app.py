@@ -13,7 +13,7 @@ import time
 
 application = Flask(__name__)
 
-model = pickle.load(open("./models/tfidf.pickle", "rb"))
+model = pickle.load(open("./models/DesTreeRev.pickle", "rb"))
 
 
 @application.route("/")
