@@ -20,10 +20,11 @@ def hello():
     response = jsonify(resp)
     
     return response
-
-connection = pika.BlockingConnection(
-    pika.ConnectionParameters(
-        host='localhost'))  # здесь нужно изменить, брать host из переменной окружения CLOUDAMQP_URL, которую мы добавим на хероку
+url = os.getenv("CLOUDAMQP_URL")
+params = pika.URLParameters(url)
+connection = pika.BlockingConnection(params)
+#    pika.ConnectionParameters(
+#        host='localhost'))  # здесь нужно изменить, брать host из переменной окружения CLOUDAMQP_URL, которую мы добавим на хероку
 
 channel = connection.channel()
 
