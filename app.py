@@ -52,7 +52,8 @@ def some_function(json_input):
     id = json_input["RevenueForecastId"]
     print("inside function")
 #    time.sleep(10)
-    a = json.loads(json_input)
+    #a = json.loads(json_input)
+    a = json_input
     ListUserGeneres = ["unknown", "rpg", "action", "adventure", "simulation", "puzzle",
              "strategy", "arcade", "casual", "platformer", "racing", "shooter",
              "other"]
