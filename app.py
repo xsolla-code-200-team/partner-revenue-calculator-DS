@@ -10,6 +10,7 @@ from ast import literal_eval
 import traceback
 import threading
 import time
+import numpy as np
 
 application = Flask(__name__)
 
