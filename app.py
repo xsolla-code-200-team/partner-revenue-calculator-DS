@@ -123,7 +123,7 @@ def some_function(json_input):
     #return json.dumps({"RevenueForecastId": id, "Result": x[0].tolist()})
     return json.dumps({"RevenueForecastId": id,
                        "ChosenForecast": {"Monetization" : a['Monetization'], "Forecast": x[0].tolist()},
-                       "OtherForecasts": {"Monetization": OtherMonet, "Forecast": x1[0].tolist()}
+                       "OtherForecasts": [{"Monetization": OtherMonet, "Forecast": x1[0].tolist()}]
                       })
 
 channel.basic_qos(prefetch_count=1)
