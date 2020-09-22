@@ -55,6 +55,7 @@ def some_function(json_input):
 #    time.sleep(10)
     #a = json.loads(json_input)
     a = json_input
+    print("This is input - ", a['Monetization'])
     newli = []
     for li in a["Genres"]:
         newli.append(li.lower())
@@ -70,7 +71,7 @@ def some_function(json_input):
     for li in a['Platforms']:
         newli.append(li.lower())
     a['Platforms'] = newli
-    
+    print("This is after decode - ", a['Monetization'])
     
     ListUserGeneres = ["unknown", "rpg", "action", "adventure", "simulation", "puzzle",
              "strategy", "arcade", "casual", "platformer", "racing", "shooter",
@@ -78,7 +79,7 @@ def some_function(json_input):
     ListUserMonet = ["free2play", "pay2play", "unknown", "other"]
     JustlistMonet = ["free2play", "pay2play"]
     OtherMonet = ""
-    if a['Monetization'] == JustlistMonet[0]:
+    if JustlistMonet[0] in a['Monetization']:
         OtherMonet = JustlistMonet[1]
     else:
         OtherMonet = JustlistMonet[0]
@@ -97,12 +98,10 @@ def some_function(json_input):
     for li in ListUserMonet:
         if li in a['Monetization']:
             UserEm.append(1)
+            AltUserEm.append(0)
         else:
             UserEm.append(0)
-        if li in OtherMonet:
             AltUserEm.append(1)
-        else:
-            AltUserEm.append(0)
     for li in ListUserPlatforms:
         if li in a['Platforms']:
             UserEm.append(1)
