@@ -123,11 +123,11 @@ def some_function(json_input):
     U1 = np.array(AltUserEm)
     x1 = model.predict(U1.reshape(1, -1)) 
     print(a['Monetization'], " - ", x[0].tolist())
-    print(OtherMonet," - ", x[1].tolist())
+    print(OtherMonet," - ", x1[0].tolist())
     #return json.dumps({"RevenueForecastId": id, "Result": x[0].tolist()})
     return json.dumps({"RevenueForecastId": id,
                        "ChosenForecast": {"Monetization" : a['Monetization'], "Forecast": x[0].tolist()},
-                       "OtherForecsts": {"Monetization": OtherMonet, "Forecast": x[1].tolist()}
+                       "OtherForecsts": {"Monetization": OtherMonet, "Forecast": x1[0].tolist()}
                       })
 
 channel.basic_qos(prefetch_count=1)
