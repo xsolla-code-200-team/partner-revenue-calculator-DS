@@ -61,9 +61,9 @@ def some_function(json_input):
         newli.append(li.lower())
     a["Genres"] = newli
     if a['Monetization'] == "Free2Pay" or a['Monetization'] == "Free2Play" or a['Monetization'] == "f2p":
-            a['Monetization'] = "free2play"
-        elif a['Monetization'] == "Pay2Pay" or a['Monetization'] == "Pay2Play" or a['Monetization'] == "p2p":
-            a['Monetization'] = "pay2play"
+        a['Monetization'] = "free2play"
+    elif a['Monetization'] == "Pay2Pay" or a['Monetization'] == "Pay2Play" or a['Monetization'] == "p2p":
+        a['Monetization'] = "pay2play"
     newli = []
     for li in a['Platforms']:
         newli.append(li.lower())
