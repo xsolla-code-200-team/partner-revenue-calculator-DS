@@ -76,36 +76,59 @@ def some_function(json_input):
              "strategy", "arcade", "casual", "platformer", "racing", "shooter",
              "other"]
     ListUserMonet = ["free2play", "pay2play", "unknown", "other"]
+    JustlistMonet = ["free2play", "pay2play"]
+    OtherMonet = ""
+    if a['Monetization'] == JustlistMonet[0]:
+        OtherMonet = JustlistMonet[1]
+    else:
+        OtherMonet = JustlistMonet[0]
+        
     ListUserPlatforms = ["pc", "mac", "android", "ios", "web", "other", "unknown"]
     ListUserRegions = ["1", "2", "3", "4", "8", "10", "11", "12", "13", "14"]
     UserEm = []
+    AltUserEm = []
     for li in ListUserGeneres:
         if li in a["Genres"]:
             UserEm.append(1)
+            AltUserEm.append(1)
         else:
             UserEm.append(0)
+            AltUserEm.append(1)
     for li in ListUserMonet:
         if li in a['Monetization']:
             UserEm.append(1)
         else:
             UserEm.append(0)
+        if li in OtherMonet:
+            AltUserEm.append(1)
+        else:
+            AltUserEm.append(0)
     for li in ListUserPlatforms:
         if li in a['Platforms']:
             UserEm.append(1)
+            AltUserEm.append(1)
         else:
             UserEm.append(0)
+            AltUserEm.append(0)
     for li in ListUserRegions:
         if li in a['Regions']:
             UserEm.append(1)
+            AltUserEm.append(1)
         else:
             UserEm.append(0)
+            AltUserEm.append(0)
             
     U = np.array(UserEm)
     x = model.predict(U.reshape(1, -1))    
-    print("sending")
-    print(x[0].tolist())
-    return json.dumps({"RevenueForecastId": id, "Result": x[0].tolist()})
-
+    U1 = np.array(AltUserEm)
+    x1 = model.predict(U1.reshape(1, -1)) 
+    print(a['Monetization'], " - ", x[0].tolist())
+    print(OtherMonet," - ", x[1].tolist())
+    #return json.dumps({"RevenueForecastId": id, "Result": x[0].tolist()})
+    return json.dumps({"RevenueForecastId": id,
+                       "ChosenForecast": {"Monetization" : a['Monetization'], "Forecast": x[0].tolist()},
+                       "OtherForecsts": {"Monetization": OtherMonet, "Forecast": x[1].tolist()}
+                      })
 
 channel.basic_qos(prefetch_count=1)
 channel.basic_consume(queue=queue_name, on_message_callback=on_request)
