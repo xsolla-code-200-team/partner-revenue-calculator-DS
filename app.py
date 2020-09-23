@@ -144,7 +144,7 @@ def some_function(json_input):
         newX = ltml(x[0].tolist())
         newX1 = ltml(x1[0].tolist())
     elif FType == 1:
-        oborot = float(a["Sales"])*float(a["Score"])
+        oborot = float(a['Sales'])*float(a['Cost'])
         newX = ltml(x[0].tolist(), oborot)
         newX1 = ltml(x1[0].tolist(), oborot)
             
