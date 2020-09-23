@@ -47,7 +47,22 @@ def on_request(ch, method, props, body):
         body=result.encode("utf-8"))
     ch.basic_ack(delivery_tag=method.delivery_tag)
 
+def log_to_money(sum_sum_t_diff_first_month, sum_0=False):
+    if sum_0:
+        money = ((10**sum_sum_t_diff_first_month)-1)*sum_0
+        return money
+    else:
+        percent = ((10**sum_sum_t_diff_first_month)-1)*1*100-100
+        return percent
 
+    def ltml(X, sum_0 = False):
+    XX = []
+    for x in X:
+        XX.append(log_to_money(x, sum_0 = sum_0))
+    return XX    
+    
+    
+    
 def some_function(json_input):
     print(json_input)
     id = json_input["RevenueForecastId"]
@@ -55,6 +70,11 @@ def some_function(json_input):
 #    time.sleep(10)
     #a = json.loads(json_input)
     a = json_input
+    FType = a['ForecastType']
+    if a['ForecastType'] == "Percentage":
+        FType = 0
+    elif a['ForecastType'] == "Absolute":
+        FType = 1
     print("This is input - ", a['Monetization'])
     newli = []
     for li in a["Genres"]:
@@ -121,11 +141,23 @@ def some_function(json_input):
     print(a['Monetization'], " - ", x[0].tolist())
     print(OtherMonet," - ", x1[0].tolist())
     #return json.dumps({"RevenueForecastId": id, "Result": x[0].tolist()})
-    return json.dumps({"RevenueForecastId": id,
-                       "ChosenForecast": {"Monetization" : a['Monetization'], "Forecast": x[0].tolist()},
-                       "OtherForecasts": [{"Monetization": OtherMonet, "Forecast": x1[0].tolist()}]
-                      })
+    if Ftype == 0:
+        newX = ltml(x[0].tolist())
+        newX1 = ltml(x1[0].tolist())
+    elif Ftype == 1:
+        oborot = float(a["Sales"])*float(a["Score"])
+        newX = ltml(x[0].tolist(), oborot)
+        newX1 = ltml(x1[0].tolist(), oborot)
+            
+    #return json.dumps({"RevenueForecastId": id,
+    #                   "ChosenForecast": {"Monetization" : a['Monetization'], "Forecast": x[0].tolist()},
+    #                   "OtherForecasts": [{"Monetization": OtherMonet, "Forecast": x1[0].tolist()}]
+    #                  })
 
+    return json.dumps({"RevenueForecastId": id,
+                       "ChosenForecast": {"Monetization" : a['Monetization'], "Forecast": newX},
+                       "OtherForecasts": [{"Monetization": OtherMonet, "Forecast": newX1}]
+                      })
 channel.basic_qos(prefetch_count=1)
 channel.basic_consume(queue=queue_name, on_message_callback=on_request)
 
