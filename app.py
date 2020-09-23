@@ -70,10 +70,9 @@ def some_function(json_input):
 #    time.sleep(10)
     #a = json.loads(json_input)
     a = json_input
-    FType = a['ForecastType']
-    if a['ForecastType'] == "Percentage":
+    if str(a['ForecastType']) == str('Percentage'):
         FType = 0
-    elif a['ForecastType'] == "Absolute":
+    elif str(a['ForecastType']) == str("Absolute"):
         FType = 1
     print("This is input - ", a['Monetization'])
     newli = []
