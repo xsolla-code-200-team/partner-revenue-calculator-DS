@@ -140,10 +140,10 @@ def some_function(json_input):
     print(a['Monetization'], " - ", x[0].tolist())
     print(OtherMonet," - ", x1[0].tolist())
     #return json.dumps({"RevenueForecastId": id, "Result": x[0].tolist()})
-    if Ftype == 0:
+    if FType == 0:
         newX = ltml(x[0].tolist())
         newX1 = ltml(x1[0].tolist())
-    elif Ftype == 1:
+    elif FType == 1:
         oborot = float(a["Sales"])*float(a["Score"])
         newX = ltml(x[0].tolist(), oborot)
         newX1 = ltml(x1[0].tolist(), oborot)
