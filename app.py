@@ -152,10 +152,15 @@ def some_function(json_input):
     #                   "ChosenForecast": {"Monetization" : a['Monetization'], "Forecast": x[0].tolist()},
     #                   "OtherForecasts": [{"Monetization": OtherMonet, "Forecast": x1[0].tolist()}]
     #                  })
-
+    SumX = []
+    SumX1 = []
+    for i in range(len(newX)):
+        SumX.append(sum(newX[:i+1]))  
+    for i in range(len(newX1)):
+        SumX1.append(sum(newX1[:i+1]))   
     return json.dumps({"RevenueForecastId": id,
-                       "ChosenForecast": {"Monetization" : a['Monetization'], "Forecast": newX},
-                       "OtherForecasts": [{"Monetization": OtherMonet, "Forecast": newX1}]
+                       "ChosenForecast": {"Monetization" : a['Monetization'], "Forecast": SumX},
+                       "OtherForecasts": [{"Monetization": OtherMonet, "Forecast": SumX1}]
                       })
 channel.basic_qos(prefetch_count=1)
 channel.basic_consume(queue=queue_name, on_message_callback=on_request)
