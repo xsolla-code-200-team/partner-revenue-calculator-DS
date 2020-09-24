@@ -149,7 +149,7 @@ def some_function(json_input):
             newX = ltml(x[0].tolist(), oborot)
             newX1 = ltml(x1[0].tolist(), oborot)
         except ValueError:
-            pass
+            return 0
     #return json.dumps({"RevenueForecastId": id,
     #                   "ChosenForecast": {"Monetization" : a['Monetization'], "Forecast": x[0].tolist()},
     #                   "OtherForecasts": [{"Monetization": OtherMonet, "Forecast": x1[0].tolist()}]
