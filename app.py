@@ -52,7 +52,7 @@ def log_to_money(sum_sum_t_diff_first_month, sum_0=False):
         money = ((10**sum_sum_t_diff_first_month)-1)*sum_0
         return money
     else:
-        percent = ((10**sum_sum_t_diff_first_month)-1)*1*100-100
+        percent = ((10**sum_sum_t_diff_first_month)-1)*1*100
         return percent
 
 def ltml(X, sum_0 = False):
