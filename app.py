@@ -160,6 +160,7 @@ def some_function(json_input):
         SumX.append(sum(newX[:i+1]))  
     for i in range(len(newX1)):
         SumX1.append(sum(newX1[:i+1]))   
+    print("Retrun - ", SumX)
     return json.dumps({"RevenueForecastId": id,
                        "ChosenForecast": {"Monetization" : a['Monetization'], "Forecast": SumX},
                        "OtherForecasts": [{"Monetization": OtherMonet, "Forecast": SumX1}]
