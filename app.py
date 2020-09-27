@@ -227,7 +227,7 @@ def some_function(json_input):
             TempDF[f"is_IV_{i}"] = [0]
         return TempDF
 
-    def ModelAss(dflist, LoM2):
+    def ModelAss(dflist, LoM2, m, FType):
         RegResults = []    
         for df in dflist:
             tempm = m
@@ -299,14 +299,17 @@ def some_function(json_input):
     ListUserPlatforms = ["pc", "mac", "android", "ios", "web"]
     ListUserRegions = ["1", "2", "3", "4", "8", "10", "11", "12", "13", "14"]
     ListUserQuortals = ['january-march', 'april-june', 'july-september', 'october-december']
-    if a['ReleaseDate'] == 'january-march':
+    if FType == 1:
+        if a['ReleaseDate'] == 'january-march':
+            m = 2
+        elif a['ReleaseDate'] == 'april-june':
+            m = 5
+        elif a['ReleaseDate'] == 'july-september':
+            m = 8
+        elif a['ReleaseDate'] == 'october-december':
+            m = 11
+    elif FType == 0:
         m = 2
-    elif a['ReleaseDate'] == 'april-june':
-        m = 5
-    elif a['ReleaseDate'] == 'july-september':
-        m = 8
-    elif a['ReleaseDate'] == 'october-december':
-        m = 11
 
     N = len(a['Regions'])
     alist = []
@@ -345,8 +348,8 @@ def some_function(json_input):
             if FType == 0:
                 AltUserDF = CreateQuortal(AltUserDF, ListUserQuortals, 'january-march', 0)
             Altdflist.append(AltUserDF)
-        x = ModelAss(dflist, LoM2)  
-        x1 = ModelAss(Altdflist, LoM2) 
+        x = ModelAss(dflist, LoM2, m, FType)  
+        x1 = ModelAss(Altdflist, m, FType) 
     
     
     
