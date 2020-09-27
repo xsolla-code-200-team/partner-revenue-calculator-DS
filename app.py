@@ -60,8 +60,13 @@ def ltml(X, sum_0 = False):
     XX = []
     for x in X:
         XX.append(log_to_money(x, sum_0 = sum_0))
-    return XX    
-    
+    return XX   
+
+def dearrayX(X):
+    NewX = []
+    for arr in X:
+        NewX.append(arr.tolist()[0][0])
+    return NewX    
     
     
 def some_function(json_input):
