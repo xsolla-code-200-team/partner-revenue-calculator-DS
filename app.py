@@ -366,24 +366,26 @@ def some_function(json_input):
     #                   "ChosenForecast": {"Monetization" : a['Monetization'], "Forecast": x[0].tolist()},
     #                   "OtherForecasts": [{"Monetization": OtherMonet, "Forecast": x1[0].tolist()}]
     #                  })
-    SumX = []
-    SumX1 = []
-    SumX = []
-    for i in range(len(x)):
-        SumX.append(sum(x[:i+1]))
-    if FType == 0:
-        NewSumX = []
-        for s in SumX:
-            NewSumX.append(s / N)
-        SumX = NewSumX.copy()
+    
+    
+    SumX = x
+    SumX1 = x1
+   # SumX = []
+   # for i in range(len(x)):
+   #     SumX.append(sum(x[:i+1]))
+  #  if FType == 0:
+   #     NewSumX = []
+  #      for s in SumX:
+   #         NewSumX.append(s / N)
+   #     SumX = NewSumX.copy()
         
-    for i in range(len(x1)):
-        SumX1.append(sum(x1[:i+1]))
-    if FType == 0:
-        NewSumX1 = []
-        for s in SumX1:
-            NewSumX1.append(s / N)
-        SumX1 = NewSumX1.copy() 
+   # for i in range(len(x1)):
+   #     SumX1.append(sum(x1[:i+1]))
+   # if FType == 0:
+   #     NewSumX1 = []
+   #     for s in SumX1:
+   #         NewSumX1.append(s / N)
+   #     SumX1 = NewSumX1.copy() 
         
     print("Retrun - ", SumX)
     return json.dumps({"RevenueForecastId": id,
