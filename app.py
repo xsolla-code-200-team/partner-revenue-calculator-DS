@@ -349,7 +349,7 @@ def some_function(json_input):
                 AltUserDF = CreateQuortal(AltUserDF, ListUserQuortals, 'january-march', 0)
             Altdflist.append(AltUserDF)
         x = ModelAss(dflist, LoM2, m, FType)  
-        x1 = ModelAss(Altdflist, m, FType) 
+        x1 = ModelAss(Altdflist, LoM2, m, FType) 
     
     
     
