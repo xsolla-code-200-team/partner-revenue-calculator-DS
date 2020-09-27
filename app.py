@@ -292,9 +292,9 @@ def some_function(json_input):
     ListUserMonet = ["free2play", "pay2play"]
     OtherMonet = ""
     if ListUserMonet[0] in a['Monetization']:
-        OtherMonet = JustlistMonet[1]
+        OtherMonet = ListUserMonet[1]
     else:
-        OtherMonet = JustlistMonet[0]
+        OtherMonet = ListUserMonet[0]
     JustlistMonet = ["free2play", "pay2play"]
     ListUserPlatforms = ["pc", "mac", "android", "ios", "web"]
     ListUserRegions = ["1", "2", "3", "4", "8", "10", "11", "12", "13", "14"]
