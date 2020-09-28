@@ -41,12 +41,12 @@ channel.queue_bind(queue=queue_name, exchange=exchange_name, routing_key=routing
 
 def on_request(ch, method, props, body):
     json_input = json.loads(body.decode("utf-8"))
+    ch.basic_ack(delivery_tag=method.delivery_tag)
     result = some_function(json_input)
     channel.basic_publish(
         exchange=exchange_name,
         routing_key='model-response' + '-' + json_input["RevenueForecastId"],
         body=result.encode("utf-8"))
-    ch.basic_ack(delivery_tag=method.delivery_tag)
 
 def log_to_money(sum_sum_t_diff_first_month, sum_0=False):
     if sum_0:
