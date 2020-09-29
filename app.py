@@ -41,7 +41,7 @@ def on_forecast_request(ch, method, props, body):
     result = process_forecast_input(json_input)
     channel.basic_publish(
         exchange=forecast_exchange_name,
-        routing_key='',
+        routing_key='forecast-model-response' + '-' + json_input["RevenueForecastId"],
         body=result.encode("utf-8"))
 
 
