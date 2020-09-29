@@ -306,8 +306,8 @@ def some_function(json_input):
         
     print("Retrun - ", SumX)
     return json.dumps({"RevenueForecastId": id,
-                       "ChosenForecast": {"Monetization" : a['Monetization'], "Forecast": x, "CumulativeForecast": SumX},
-                       "OtherForecasts": [{"Monetization": OtherMonet, "Forecast": x1, "CumulativeForecast": SumX1}]
+                       "ChosenForecast": {"Monetization" : a['Monetization'], "TendencyForecast": x, "CumulativeForecast": SumX},
+                       "OtherForecasts": [{"Monetization": OtherMonet, "TendencyForecast": x1, "CumulativeForecast": SumX1}]
                       })
 channel.basic_qos(prefetch_count=1)
 channel.basic_consume(queue=queue_name, on_message_callback=on_request)
