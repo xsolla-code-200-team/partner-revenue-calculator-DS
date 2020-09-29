@@ -1,19 +1,29 @@
 from flask import Flask
-from flask import request
-import requests
 from flask import jsonify
 import pickle
 import pika
 import os
 import json
-from ast import literal_eval
-import traceback
 import threading
-import time
-import numpy as np
 import pandas as pd
 
 application = Flask(__name__)
+
+url = os.getenv("CLOUDAMQP_URL")
+params = pika.URLParameters(url)
+connection = pika.BlockingConnection(params)
+# connection = pika.BlockingConnection(
+#     pika.ConnectionParameters(host="localhost")
+# )
+channel = connection.channel()
+forecast_exchange_name = 'forecast-exchange'
+forecast_queue_name = 'forecast-model-queue'
+forecast_routing_key = 'forecast-model-message'
+
+static_info_exchange_name = 'static-info-exchange'
+static_info_queue_name = 'static-info-queue'
+static_info_routing_key = 'static-info-message'
+static_info_response_routing_key = "static-info-response"
 
 LoM2 = pickle.load(open("./models/LoM24.pickle", "rb"))
 
@@ -25,55 +35,56 @@ def hello():
     return response
 
 
-url = os.getenv("CLOUDAMQP_URL")
-params = pika.URLParameters(url)
-connection = pika.BlockingConnection(params)
-# здесь нужно изменить, брать host из переменной окружения CLOUDAMQP_URL, которую мы добавим на хероку
-
-channel = connection.channel()
-exchange_name = 'model-exchange'
-queue_name = 'model-queue'
-routing_key = 'model-message'
-channel.exchange_declare(exchange=exchange_name, exchange_type='direct')
-channel.queue_declare(queue=queue_name)
-channel.queue_bind(queue=queue_name, exchange=exchange_name, routing_key=routing_key)
-
-
-def on_request(ch, method, props, body):
+def on_forecast_request(ch, method, props, body):
     json_input = json.loads(body.decode("utf-8"))
     ch.basic_ack(delivery_tag=method.delivery_tag)
-    result = some_function(json_input)
+    result = process_forecast_input(json_input)
     channel.basic_publish(
-        exchange=exchange_name,
-        routing_key='model-response' + '-' + json_input["RevenueForecastId"],
+        exchange=forecast_exchange_name,
+        routing_key='',
         body=result.encode("utf-8"))
+
+
+def on_static_info_request(ch, method, props, body):
+    json_input = json.loads(body.decode("utf-8"))
+    print(json_input)
+    ch.basic_ack(delivery_tag=method.delivery_tag)
+    result = json.dumps({"something":"something"}) # add info here
+    channel.basic_publish(
+        exchange=static_info_exchange_name,
+        routing_key=static_info_response_routing_key,
+        body=result.encode("utf-8"))
+
 
 def log_to_money(sum_sum_t_diff_first_month, sum_0=False):
     if sum_0:
-        money = ((10**sum_sum_t_diff_first_month)-1)*sum_0
+        money = ((10 ** sum_sum_t_diff_first_month) - 1) * sum_0
         return money
     else:
-        percent = ((10**sum_sum_t_diff_first_month)-1)*1*100
+        percent = ((10 ** sum_sum_t_diff_first_month) - 1) * 1 * 100
         return percent
 
-def ltml(X, sum_0 = False):
+
+def ltml(X, sum_0=False):
     XX = []
     for x in X:
-        XX.append(log_to_money(x, sum_0 = sum_0))
-    return XX   
+        XX.append(log_to_money(x, sum_0=sum_0))
+    return XX
+
 
 def dearrayX(X):
     NewX = []
     for arr in X:
         NewX.append(arr.tolist()[0][0])
-    return NewX    
-    
-    
-def some_function(json_input):
+    return NewX
+
+
+def process_forecast_input(json_input):
     print(json_input)
     id = json_input["RevenueForecastId"]
     print("inside function")
     a = json_input
+
     def Creategenre(DF, gl, userg):
         TempDF = DF.copy()
         for li in gl:
@@ -162,14 +173,14 @@ def some_function(json_input):
         return TempDF
 
     def ModelProcessing(dflist, LoM2, m, FType):
-        RegResults = []    
+        RegResults = []
         for df in dflist:
             tempm = m
-            X = [] # Весь процесс здесь
+            X = []  # Весь процесс здесь
             AltX = []
             Result = []
             TempDF = df.copy()
-            for i in range(nmonth+1):
+            for i in range(nmonth + 1):
                 X = []
                 tempm += 1
                 x = LoM2[i].predict(TempDF.to_numpy().reshape(1, -1))  # Синяя линия - предикт, оранж - реальные данные
@@ -177,16 +188,16 @@ def some_function(json_input):
                 X = dearrayX(X)
                 TempDF[f"Month_{i}"] = X
                 Result.append(X[0])
-                TempDF = UpdateQuortal(TempDF, tempm, i+1)
-                TempDF = TempDF.drop(columns = [f"is_I_{i}", f"is_II_{i}", f"is_III_{i}", f"is_IV_{i}"])
+                TempDF = UpdateQuortal(TempDF, tempm, i + 1)
+                TempDF = TempDF.drop(columns=[f"is_I_{i}", f"is_II_{i}", f"is_III_{i}", f"is_IV_{i}"])
             del Result[1]
             RegResults.append(Result)
         if len(RegResults) > 1:
             tempresult = []
             for i in range(len(RegResults)):
                 if FType == 1:
-                    tempresult.append(ltml(RegResults[i], float(alist[i]['Sales'])*float(alist[i]['Cost'])))
-                elif FType == 0: 
+                    tempresult.append(ltml(RegResults[i], float(alist[i]['Sales']) * float(alist[i]['Cost'])))
+                elif FType == 0:
                     tempresult.append(ltml(RegResults[i]))
             final = []
             for i in range(len(tempresult[0])):
@@ -200,7 +211,6 @@ def some_function(json_input):
             elif FType == 0:
                 final = ltml(RegResults[0])
         return final
-
 
     if str(a['ForecastType']) == str('Percentage'):
         FType = 0
@@ -221,7 +231,7 @@ def some_function(json_input):
     a['Platforms'] = newli
 
     ListUserGeneres = ["rpg", "action", "adventure", "simulation", "puzzle",
-             "strategy", "arcade", "casual", "platformer", "racing", "shooter"]
+                       "strategy", "arcade", "casual", "platformer", "racing", "shooter"]
     ListQuortals = ['january-march', 'april-june', 'july-september', 'october-december']
     ListUserMonet = ["free2play", "pay2play"]
     OtherMonet = ""
@@ -253,12 +263,10 @@ def some_function(json_input):
         tempdict['Sales'] = float(tempdict['Sales']) / float(N)
         alist.append(tempdict)
 
-
-
     nmonth = 24
 
     if alist:
-        dflist  = []
+        dflist = []
         Altdflist = []
         for al in alist:
             UserDF = pd.DataFrame()
@@ -282,35 +290,35 @@ def some_function(json_input):
             if FType == 0:
                 AltUserDF = CreateQuortal(AltUserDF, ListUserQuortals, 'january-march', 0)
             Altdflist.append(AltUserDF)
-        x = ModelProcessing(dflist, LoM2, m, FType)  
-        x1 = ModelProcessing(Altdflist, LoM2, m, FType) 
-    
+        x = ModelProcessing(dflist, LoM2, m, FType)
+        x1 = ModelProcessing(Altdflist, LoM2, m, FType)
+
     SumX = x
     SumX1 = x1
     SumX = []
     for i in range(len(x)):
-        SumX.append(sum(x[:i+1]))
+        SumX.append(sum(x[:i + 1]))
     if FType == 0:
         NewSumX = []
         for s in SumX:
             NewSumX.append(s / N)
         SumX = NewSumX.copy()
-        
+
     for i in range(len(x1)):
-        SumX1.append(sum(x1[:i+1]))
+        SumX1.append(sum(x1[:i + 1]))
     if FType == 0:
         NewSumX1 = []
         for s in SumX1:
             NewSumX1.append(s / N)
-        SumX1 = NewSumX1.copy() 
-        
+        SumX1 = NewSumX1.copy()
+
     print("Retrun - ", SumX)
     return json.dumps({"RevenueForecastId": id,
-                       "ChosenForecast": {"Monetization" : a['Monetization'], "TendencyForecast": x, "CumulativeForecast": SumX},
-                       "OtherForecasts": [{"Monetization": OtherMonet, "TendencyForecast": x1, "CumulativeForecast": SumX1}]
-                      })
-channel.basic_qos(prefetch_count=1)
-channel.basic_consume(queue=queue_name, on_message_callback=on_request)
+                       "ChosenForecast": {"Monetization": a['Monetization'], "TendencyForecast": x,
+                                          "CumulativeForecast": SumX},
+                       "OtherForecasts": [
+                           {"Monetization": OtherMonet, "TendencyForecast": x1, "CumulativeForecast": SumX1}]
+                       })
 
 
 def listen():
@@ -318,9 +326,32 @@ def listen():
     application.run(debug=False, port=port, host='0.0.0.0', threaded=True)
 
 
-if __name__ == "__main__":
-    Th = threading.Thread(target=listen)
-    Th.start()
-    print(" [x] Awaiting RPC requests")
-    channel.start_consuming()
+def init_channel():
+    channel.exchange_declare(exchange=forecast_exchange_name, exchange_type='direct')
+    channel.exchange_declare(exchange=static_info_exchange_name, exchange_type='direct')
+    channel.queue_declare(queue=forecast_queue_name)
+    channel.queue_declare(queue=static_info_queue_name)
+    channel.queue_bind(queue=forecast_queue_name, exchange=forecast_exchange_name, routing_key=forecast_routing_key)
+    channel.queue_bind(queue=static_info_queue_name, exchange=static_info_exchange_name, routing_key=static_info_routing_key)
 
+
+def init_forecast_consumer():
+    channel.basic_qos(prefetch_count=1)
+    channel.basic_consume(queue=forecast_queue_name, on_message_callback=on_forecast_request)
+    print(" [x] Awaiting RPC requests (forecasts)")
+
+
+def init_static_info_consumer():
+    channel.basic_qos(prefetch_count=1)
+    channel.basic_consume(queue=static_info_queue_name, on_message_callback=on_static_info_request)
+    print(" [x] Awaiting RPC requests (static info)")
+
+
+
+if __name__ == "__main__":
+    listening_thread = threading.Thread(target=listen)
+    listening_thread.start()
+    init_channel()
+    init_forecast_consumer()
+    init_static_info_consumer()
+    channel.start_consuming()
