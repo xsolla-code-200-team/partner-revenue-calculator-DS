@@ -161,7 +161,7 @@ def some_function(json_input):
             TempDF[f"is_IV_{i}"] = [0]
         return TempDF
 
-    def ModelAss(dflist, LoM2, m, FType):
+    def ModelProcessing(dflist, LoM2, m, FType):
         RegResults = []    
         for df in dflist:
             tempm = m
@@ -282,8 +282,8 @@ def some_function(json_input):
             if FType == 0:
                 AltUserDF = CreateQuortal(AltUserDF, ListUserQuortals, 'january-march', 0)
             Altdflist.append(AltUserDF)
-        x = ModelAss(dflist, LoM2, m, FType)  
-        x1 = ModelAss(Altdflist, LoM2, m, FType) 
+        x = ModelProcessing(dflist, LoM2, m, FType)  
+        x1 = ModelProcessing(Altdflist, LoM2, m, FType) 
     
     SumX = x
     SumX1 = x1
@@ -306,8 +306,8 @@ def some_function(json_input):
         
     print("Retrun - ", SumX)
     return json.dumps({"RevenueForecastId": id,
-                       "ChosenForecast": {"Monetization" : a['Monetization'], "Forecast": x, "CumForecast": SumX},
-                       "OtherForecasts": [{"Monetization": OtherMonet, "Forecast": x1, "CumForecast": SumX1}]
+                       "ChosenForecast": {"Monetization" : a['Monetization'], "Forecast": x, "CumulativeForecast": SumX},
+                       "OtherForecasts": [{"Monetization": OtherMonet, "Forecast": x1, "CumulativeForecast": SumX1}]
                       })
 channel.basic_qos(prefetch_count=1)
 channel.basic_consume(queue=queue_name, on_message_callback=on_request)
