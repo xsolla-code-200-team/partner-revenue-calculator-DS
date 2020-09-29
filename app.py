@@ -73,72 +73,6 @@ def some_function(json_input):
     print(json_input)
     id = json_input["RevenueForecastId"]
     print("inside function")
-    #    time.sleep(10)
-    #a = json.loads(json_input)
-   #  a = json_input
-#     if str(a['ForecastType']) == str('Percentage'):
-#         FType = 0
-#     elif str(a['ForecastType']) == str("Absolute"):
-#         FType = 1
-#     print("This is input - ", a['Monetization'])
-#     newli = []
-#     for li in a["Genres"]:
-#         newli.append(li.lower())
-#     a["Genres"] = newli
-#     if a['Monetization'] == "Free2Pay" or a['Monetization'] == "Free2Play" or a['Monetization'] == "f2p":
-#         a['Monetization'] = "free2play"
-#     elif a['Monetization'] == "Pay2Pay" or a['Monetization'] == "Pay2Play" or a['Monetization'] == "p2p":
-#         a['Monetization'] = "pay2play"
-#     newli = []
-#     for li in a['Platforms']:
-#         newli.append(li.lower())
-#     a['Platforms'] = newli
-#     print("This is after decode - ", a['Monetization'])
-    
-#     ListUserGeneres = ["unknown", "rpg", "action", "adventure", "simulation", "puzzle",
-#              "strategy", "arcade", "casual", "platformer", "racing", "shooter",
-#              "other"]
-#     ListUserMonet = ["free2play", "pay2play", "unknown", "other"]
-#     JustlistMonet = ["free2play", "pay2play"]
-#     OtherMonet = ""
-#     if JustlistMonet[0] in a['Monetization']:
-#         OtherMonet = JustlistMonet[1]
-#     else:
-#         OtherMonet = JustlistMonet[0]
-        
-#     ListUserPlatforms = ["pc", "mac", "android", "ios", "web", "other", "unknown"]
-#     ListUserRegions = ["1", "2", "3", "4", "8", "10", "11", "12", "13", "14"]
-#     UserEm = []
-#     AltUserEm = []
-#     for li in ListUserGeneres:
-#         if li in a["Genres"]:
-#             UserEm.append(1)
-#             AltUserEm.append(1)
-#         else:
-#             UserEm.append(0)
-#             AltUserEm.append(1)
-#     for li in ListUserMonet:
-#         if li in a['Monetization']:
-#             UserEm.append(1)
-#             AltUserEm.append(0)
-#         else:
-#             UserEm.append(0)
-#             AltUserEm.append(1)
-#     for li in ListUserPlatforms:
-#         if li in a['Platforms']:
-#             UserEm.append(1)
-#             AltUserEm.append(1)
-#         else:
-#             UserEm.append(0)
-#             AltUserEm.append(0)
-#     for li in ListUserRegions:
-#         if li in a['Regions']:
-#             UserEm.append(1)
-#             AltUserEm.append(1)
-#         else:
-#             UserEm.append(0)
-#             AltUserEm.append(0)
-    
     a = json_input
     def Creategenre(DF, gl, userg):
         TempDF = DF.copy()
@@ -351,23 +285,6 @@ def some_function(json_input):
         x = ModelAss(dflist, LoM2, m, FType)  
         x1 = ModelAss(Altdflist, LoM2, m, FType) 
     
-    
-    
-    
-    
-#     U = np.array(UserEm)
-#     x = model.predict(U.reshape(1, -1))    
-#     U1 = np.array(AltUserEm)
-#     x1 = model.predict(U1.reshape(1, -1)) 
-#     print(a['Monetization'], " - ", x[0].tolist())
-#     print(OtherMonet," - ", x1[0].tolist())
-    #return json.dumps({"RevenueForecastId": id, "Result": x[0].tolist()})
-    #return json.dumps({"RevenueForecastId": id,
-    #                   "ChosenForecast": {"Monetization" : a['Monetization'], "Forecast": x[0].tolist()},
-    #                   "OtherForecasts": [{"Monetization": OtherMonet, "Forecast": x1[0].tolist()}]
-    #                  })
-    
-    
     SumX = x
     SumX1 = x1
     SumX = []
@@ -389,8 +306,8 @@ def some_function(json_input):
         
     print("Retrun - ", SumX)
     return json.dumps({"RevenueForecastId": id,
-                       "ChosenForecast": {"Monetization" : a['Monetization'], "Forecast": x, "CumForecast" = SumX},
-                       "OtherForecasts": [{"Monetization": OtherMonet, "Forecast": x1, "CumForecast" = SumX1}]
+                       "ChosenForecast": {"Monetization" : a['Monetization'], "Forecast": x, "CumForecast": SumX},
+                       "OtherForecasts": [{"Monetization": OtherMonet, "Forecast": x1, "CumForecast": SumX1}]
                       })
 channel.basic_qos(prefetch_count=1)
 channel.basic_consume(queue=queue_name, on_message_callback=on_request)
