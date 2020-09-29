@@ -370,27 +370,27 @@ def some_function(json_input):
     
     SumX = x
     SumX1 = x1
-   # SumX = []
-   # for i in range(len(x)):
-   #     SumX.append(sum(x[:i+1]))
-  #  if FType == 0:
-   #     NewSumX = []
-  #      for s in SumX:
-   #         NewSumX.append(s / N)
-   #     SumX = NewSumX.copy()
+    SumX = []
+    for i in range(len(x)):
+        SumX.append(sum(x[:i+1]))
+    if FType == 0:
+        NewSumX = []
+        for s in SumX:
+            NewSumX.append(s / N)
+        SumX = NewSumX.copy()
         
-   # for i in range(len(x1)):
-   #     SumX1.append(sum(x1[:i+1]))
-   # if FType == 0:
-   #     NewSumX1 = []
-   #     for s in SumX1:
-   #         NewSumX1.append(s / N)
-   #     SumX1 = NewSumX1.copy() 
+    for i in range(len(x1)):
+        SumX1.append(sum(x1[:i+1]))
+    if FType == 0:
+        NewSumX1 = []
+        for s in SumX1:
+            NewSumX1.append(s / N)
+        SumX1 = NewSumX1.copy() 
         
     print("Retrun - ", SumX)
     return json.dumps({"RevenueForecastId": id,
-                       "ChosenForecast": {"Monetization" : a['Monetization'], "Forecast": SumX},
-                       "OtherForecasts": [{"Monetization": OtherMonet, "Forecast": SumX1}]
+                       "ChosenForecast": {"Monetization" : a['Monetization'], "Forecast": x, "CumForecast" = SumX},
+                       "OtherForecasts": [{"Monetization": OtherMonet, "Forecast": x1, "CumForecast" = SumX1}]
                       })
 channel.basic_qos(prefetch_count=1)
 channel.basic_consume(queue=queue_name, on_message_callback=on_request)
