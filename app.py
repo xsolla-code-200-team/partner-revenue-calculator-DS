@@ -49,7 +49,45 @@ def on_static_info_request(ch, method, props, body):
     json_input = json.loads(body.decode("utf-8"))
     print(json_input)
     ch.basic_ack(delivery_tag=method.delivery_tag)
-    result = json.dumps({"something":"something"}) # add info here
+    result = json.dumps(
+        {
+            "GenresInfo":
+            [
+                {
+                    "Genre": "rpg",
+                    "RegionsInfo":
+                    [
+                        {
+                            "Region": "1",
+                            "Price": 10,
+                            "Revenue": 20
+                        },
+                        {
+                            "Region": "2",
+                            "Price": 30,
+                            "Revenue": 40
+                        }
+                    ]
+                 },
+                {
+                    "Genre": "action",
+                    "RegionsInfo":
+                    [
+                        {
+                            "Region": "3",
+                            "Price": 10,
+                            "Revenue": 20
+                        },
+                        {
+                            "Region": "4",
+                            "Price": 30,
+                            "Revenue": 40
+                        }
+                    ]
+                 },
+            ]
+        }
+    )
     channel.basic_publish(
         exchange=static_info_exchange_name,
         routing_key=static_info_response_routing_key,
