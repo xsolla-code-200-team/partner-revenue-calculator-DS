@@ -296,9 +296,8 @@ def process_forecast_input(json_input):
         x = ModelProcessing(dflist, LoM2, m, FType)
         x1 = ModelProcessing(Altdflist, LoM2, m, FType)
 
-    SumX = x
-    SumX1 = x1
     SumX = []
+    SumX1 = []
     for i in range(len(x)):
         SumX.append(sum(x[:i + 1]))
     if FType == 0:
@@ -314,8 +313,10 @@ def process_forecast_input(json_input):
         for s in SumX1:
             NewSumX1.append(s / N)
         SumX1 = NewSumX1.copy()
-
-    print("Retrun - ", SumX)
+    print("Return tendency our model - ", x)
+    print("Return tendency another model - ", x1)
+    print("Retrun sum our model - ", SumX)
+    print("Retrun sum another model - ", SumX1)
     return json.dumps({"RevenueForecastId": id,
                        "ChosenForecast": {"Monetization": a['Monetization'], "TendencyForecast": x,
                                           "CumulativeForecast": SumX},
