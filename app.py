@@ -9,12 +9,12 @@ import pandas as pd
 
 application = Flask(__name__)
 
-url = os.getenv("CLOUDAMQP_URL")
-params = pika.URLParameters(url)
-connection = pika.BlockingConnection(params)
-# connection = pika.BlockingConnection(
-#     pika.ConnectionParameters(host="localhost")
-# )
+# url = os.getenv("CLOUDAMQP_URL")
+# params = pika.URLParameters(url)
+# connection = pika.BlockingConnection(params)
+connection = pika.BlockingConnection(
+    pika.ConnectionParameters(host="localhost")
+)
 channel = connection.channel()
 forecast_exchange_name = 'forecast-exchange'
 forecast_queue_name = 'forecast-model-queue'
@@ -52,6 +52,7 @@ def on_static_info_request(ch, method, props, body):
     with open('./files/static_info.txt') as json_file:
         data = json.load(json_file)
     result = json.dumps(data)
+    print("Result from file: " + result)
     channel.basic_publish(
         exchange=static_info_exchange_name,
         routing_key=static_info_response_routing_key,
