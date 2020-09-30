@@ -9,12 +9,12 @@ import pandas as pd
 
 application = Flask(__name__)
 
-# url = os.getenv("CLOUDAMQP_URL")
-# params = pika.URLParameters(url)
-# connection = pika.BlockingConnection(params)
-connection = pika.BlockingConnection(
-    pika.ConnectionParameters(host="localhost")
-)
+url = os.getenv("CLOUDAMQP_URL")
+params = pika.URLParameters(url)
+connection = pika.BlockingConnection(params)
+# connection = pika.BlockingConnection(
+#     pika.ConnectionParameters(host="localhost")
+# )
 channel = connection.channel()
 forecast_exchange_name = 'forecast-exchange'
 forecast_queue_name = 'forecast-model-queue'
