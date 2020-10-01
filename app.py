@@ -210,7 +210,7 @@ def process_forecast_input(json_input):
                 final.append(summ)
         else:
             if FType == 1:
-                final = ltml(RegResults[0], float(alist[i]['InitialRevenue']))
+                final = ltml(RegResults[0], float(alist[0]['InitialRevenue']))
             elif FType == 0:
                 final = ltml(RegResults[0])
         return final
@@ -293,8 +293,8 @@ def process_forecast_input(json_input):
             if FType == 0:
                 AltUserDF = CreateQuortal(AltUserDF, ListUserQuortals, 'january-march', 0)
             Altdflist.append(AltUserDF)
-        x = ModelProcessing(dflist, LoM2, m, FType)
-        x1 = ModelProcessing(Altdflist, LoM2, m, FType)
+        x = ModelProcessing(dflist, LoM2, m, FType, alist)
+        x1 = ModelProcessing(Altdflist, LoM2, m, FType, alist)
 
     SumX = []
     SumX1 = []
