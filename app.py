@@ -266,7 +266,7 @@ def process_forecast_input(json_input):
         tempdict['Sales'] = float(tempdict['Sales']) / float(N)
         alist.append(tempdict)
 
-    nmonth = 24
+    nmonth = 12
 
     if alist:
         dflist = []
