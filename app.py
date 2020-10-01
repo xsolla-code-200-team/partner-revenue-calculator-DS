@@ -199,7 +199,7 @@ def process_forecast_input(json_input):
             tempresult = []
             for i in range(len(RegResults)):
                 if FType == 1:
-                    tempresult.append(ltml(RegResults[i], float(alist[i]['Sales']) * float(alist[i]['Cost'])))
+                    tempresult.append(ltml(RegResults[i], float(alist[i]['InitialRevenue'])))
                 elif FType == 0:
                     tempresult.append(ltml(RegResults[i]))
             final = []
@@ -210,7 +210,7 @@ def process_forecast_input(json_input):
                 final.append(summ)
         else:
             if FType == 1:
-                final = ltml(RegResults[0], float(alist[0]['Sales']) * float(alist[0]['Cost']))
+                final = ltml(RegResults[0], float(alist[i]['InitialRevenue']))
             elif FType == 0:
                 final = ltml(RegResults[0])
         return final
