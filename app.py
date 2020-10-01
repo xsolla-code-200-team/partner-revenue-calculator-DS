@@ -263,7 +263,7 @@ def process_forecast_input(json_input):
     for r in a['Regions']:
         tempdict = a.copy()
         tempdict['Regions'] = r
-        tempdict['Sales'] = float(tempdict['Sales']) / float(N)
+        tempdict['InitialRevenue'] = float(tempdict['InitialRevenue']) / float(N)
         alist.append(tempdict)
 
     nmonth = 12
