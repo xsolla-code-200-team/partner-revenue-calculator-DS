@@ -175,7 +175,7 @@ def process_forecast_input(json_input):
             TempDF[f"is_IV_{i}"] = [0]
         return TempDF
 
-    def ModelProcessing(dflist, LoM2, m, FType, alist):
+    def ModelProcessing(dflist, LoM2, m, FType, alist, N):
         RegResults = []
         for df in dflist:
             tempm = m
@@ -208,6 +208,11 @@ def process_forecast_input(json_input):
                 for j in range(len(tempresult)):
                     summ = summ + tempresult[j][i]
                 final.append(summ)
+            if FType == 0:
+                newfinal = []
+                for f in final:
+                    newfinal.append(f/float(N))
+                final = newfinal.copy()
         else:
             if FType == 1:
                 final = ltml(RegResults[0], float(alist[0]['InitialRevenue']))
@@ -293,8 +298,8 @@ def process_forecast_input(json_input):
             if FType == 0:
                 AltUserDF = CreateQuortal(AltUserDF, ListUserQuortals, 'january-march', 0)
             Altdflist.append(AltUserDF)
-        x = ModelProcessing(dflist, LoM2, m, FType, alist)
-        x1 = ModelProcessing(Altdflist, LoM2, m, FType, alist)
+        x = ModelProcessing(dflist, LoM2, m, FType, alist, N)
+        x1 = ModelProcessing(Altdflist, LoM2, m, FType, alist, N)
 
     SumX = []
     SumX1 = []
