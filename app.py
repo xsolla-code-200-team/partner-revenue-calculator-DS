@@ -175,7 +175,7 @@ def process_forecast_input(json_input):
             TempDF[f"is_IV_{i}"] = [0]
         return TempDF
 
-    def ModelProcessing(dflist, LoM2, m, FType):
+    def ModelProcessing(dflist, LoM2, m, FType, alist):
         RegResults = []
         for df in dflist:
             tempm = m
